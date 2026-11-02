@@ -61,7 +61,7 @@ export function RecipeEditor({
         const { data: u } = await supabase.auth.getUser();
         const { data, error } = await supabase
           .from("recipes")
-          .insert({ ...payload, created_by: u.user?.id })
+          .insert({ ...payload, created_by: u.user?.id ?? null })
           .select("id")
           .single();
         if (error) throw error;

@@ -38,7 +38,7 @@ export function addDays(d: Date, n: number) {
 }
 
 export function formatDay(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number);
+  const [y = 0, m = 1, d = 1] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString(undefined, {
     weekday: "short",
     day: "numeric",
