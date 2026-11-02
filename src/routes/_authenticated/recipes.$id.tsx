@@ -36,7 +36,7 @@ function RecipeDetail() {
   async function remove() {
     if (!recipe || !confirm(`Delete "${recipe.title}"?`)) return;
     const { error } = await supabase.from("recipes").delete().eq("id", recipe.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (recipe.photo_path) await supabase.storage.from("recipe-photos").remove([recipe.photo_path]);
     await qc.invalidateQueries({ queryKey: ["recipes"] });
     navigate({ to: "/recipes" });

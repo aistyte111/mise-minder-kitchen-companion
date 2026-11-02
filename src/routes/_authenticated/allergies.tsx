@@ -42,7 +42,7 @@ function AllergiesPage() {
 
   async function del(id: string) {
     const { error } = await supabase.from("guest_allergies").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["guest-allergies"] });
   }
 
@@ -131,7 +131,7 @@ function GuestDialog({ onClose }: { onClose: () => void }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const { error } = await supabase.from("guest_allergies").insert(f);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["guest-allergies"] });
     onClose();
   }

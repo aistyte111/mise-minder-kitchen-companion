@@ -65,7 +65,7 @@ function SchedulePage() {
 
   async function del(table: "schedule_items" | "notes", id: string) {
     const { error } = await supabase.from(table).delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: [table === "notes" ? "notes" : "schedule"] });
   }
 
@@ -156,7 +156,7 @@ function ItemDialog({ onClose }: { onClose: () => void }) {
       start_time: f.start_time || null,
       end_time: f.end_time || null,
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["schedule"] });
     onClose();
   }
@@ -214,7 +214,7 @@ function NoteDialog({ onClose }: { onClose: () => void }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const { error } = await supabase.from("notes").insert(f);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["notes"] });
     onClose();
   }
