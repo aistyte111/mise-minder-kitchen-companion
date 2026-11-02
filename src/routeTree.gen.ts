@@ -10,33 +10,119 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAllergiesRouteImport } from './routes/_authenticated/allergies'
+import { Route as AuthenticatedScheduleRouteImport } from './routes/_authenticated/schedule'
+import { Route as AuthenticatedTodayRouteImport } from './routes/_authenticated/today'
+import { Route as AuthenticatedRecipesIndexRouteImport } from './routes/_authenticated/recipes.index'
+import { Route as AuthenticatedRecipesIdRouteImport } from './routes/_authenticated/recipes.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAllergiesRoute = AuthenticatedAllergiesRouteImport.update({
+  id: '/allergies',
+  path: '/allergies',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedScheduleRoute = AuthenticatedScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTodayRoute = AuthenticatedTodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRecipesIndexRoute =
+  AuthenticatedRecipesIndexRouteImport.update({
+    id: '/recipes/',
+    path: '/recipes/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRecipesIdRoute = AuthenticatedRecipesIdRouteImport.update({
+  id: '/recipes/$id',
+  path: '/recipes/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/allergies': typeof AuthenticatedAllergiesRoute
+  '/schedule': typeof AuthenticatedScheduleRoute
+  '/today': typeof AuthenticatedTodayRoute
+  '/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/recipes/': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/allergies': typeof AuthenticatedAllergiesRoute
+  '/schedule': typeof AuthenticatedScheduleRoute
+  '/today': typeof AuthenticatedTodayRoute
+  '/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/recipes': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/allergies': typeof AuthenticatedAllergiesRoute
+  '/_authenticated/schedule': typeof AuthenticatedScheduleRoute
+  '/_authenticated/today': typeof AuthenticatedTodayRoute
+  '/_authenticated/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/_authenticated/recipes/': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/allergies'
+    | '/schedule'
+    | '/today'
+    | '/recipes/$id'
+    | '/recipes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/allergies'
+    | '/schedule'
+    | '/today'
+    | '/recipes/$id'
+    | '/recipes'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/allergies'
+    | '/_authenticated/schedule'
+    | '/_authenticated/today'
+    | '/_authenticated/recipes/$id'
+    | '/_authenticated/recipes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +134,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/allergies': {
+      id: '/_authenticated/allergies'
+      path: '/allergies'
+      fullPath: '/allergies'
+      preLoaderRoute: typeof AuthenticatedAllergiesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/schedule': {
+      id: '/_authenticated/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof AuthenticatedScheduleRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/today': {
+      id: '/_authenticated/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof AuthenticatedTodayRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/recipes/': {
+      id: '/_authenticated/recipes/'
+      path: '/recipes'
+      fullPath: '/recipes/'
+      preLoaderRoute: typeof AuthenticatedRecipesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/recipes/$id': {
+      id: '/_authenticated/recipes/$id'
+      path: '/recipes/$id'
+      fullPath: '/recipes/$id'
+      preLoaderRoute: typeof AuthenticatedRecipesIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAllergiesRoute: typeof AuthenticatedAllergiesRoute
+  AuthenticatedScheduleRoute: typeof AuthenticatedScheduleRoute
+  AuthenticatedTodayRoute: typeof AuthenticatedTodayRoute
+  AuthenticatedRecipesIdRoute: typeof AuthenticatedRecipesIdRoute
+  AuthenticatedRecipesIndexRoute: typeof AuthenticatedRecipesIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAllergiesRoute: AuthenticatedAllergiesRoute,
+  AuthenticatedScheduleRoute: AuthenticatedScheduleRoute,
+  AuthenticatedTodayRoute: AuthenticatedTodayRoute,
+  AuthenticatedRecipesIdRoute: AuthenticatedRecipesIdRoute,
+  AuthenticatedRecipesIndexRoute: AuthenticatedRecipesIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
