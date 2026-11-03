@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { FileUp, Plus, Trash2 } from "lucide-react";
+import { ScheduleImportDialog } from "@/components/kitchen/ScheduleImport";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -25,16 +26,16 @@ import { cn } from "@/lib/utils";
 
 const range = () => {
   const t = new Date();
-  return { from: toISODate(t), to: toISODate(addDays(t, 13)) };
+  return { from: toISODate(t), to: toISODate(addDays(t, 20)) };
 };
 
 export const Route = createFileRoute("/_authenticated/schedule")({
   head: () => ({
     meta: [
       { title: "Schedule — Mise" },
-      { name: "description", content: "Shifts, prep tasks, events and notes for the next two weeks." },
+      { name: "description", content: "Shifts, prep tasks, events and notes for the next three weeks." },
       { property: "og:title", content: "Schedule — Mise" },
-      { property: "og:description", content: "Shifts, prep tasks, events and notes for the next two weeks." },
+      { property: "og:description", content: "Shifts, prep tasks, events and notes for the next three weeks." },
     ],
   }),
   loader: async ({ context }) => {
@@ -58,10 +59,10 @@ function SchedulePage() {
   const { data: items } = useSuspenseQuery(scheduleQuery(from, to));
   const { data: notes } = useSuspenseQuery(notesQuery(from, to));
   const { data: role } = useQuery(roleQuery);
-  const [dialog, setDialog] = useState<null | "item" | "note">(null);
+  const [dialog, setDialog] = useState<null | "item" | "note" | "import">(null);
   const qc = useQueryClient();
 
-  const days = Array.from({ length: 14 }, (_, i) => toISODate(addDays(new Date(), i)));
+  const days = Array.from({ length: 21 }, (_, i) => toISODate(addDays(new Date(), i)));
 
   async function del(table: "schedule_items" | "notes", id: string) {
     const { error } = await supabase.from(table).delete().eq("id", id);
@@ -73,10 +74,13 @@ function SchedulePage() {
     <>
       <PageHeader
         title="Schedule"
-        subtitle="Next two weeks"
+        subtitle="Next three weeks"
         action={
           role?.isAdmin && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => setDialog("import")}>
+                <FileUp className="h-4 w-4" /> Upload file
+              </Button>
               <Button variant="outline" onClick={() => setDialog("note")}>
                 <Plus className="h-4 w-4" /> Note
               </Button>
@@ -142,6 +146,7 @@ function SchedulePage() {
       </div>
       {dialog === "item" && <ItemDialog onClose={() => setDialog(null)} />}
       {dialog === "note" && <NoteDialog onClose={() => setDialog(null)} />}
+      {dialog === "import" && <ScheduleImportDialog onClose={() => setDialog(null)} />}
     </>
   );
 }
@@ -167,7 +172,7 @@ function ItemDialog({ onClose }: { onClose: () => void }) {
           <DialogTitle className="font-display text-2xl font-normal">Add to schedule</DialogTitle>
         </DialogHeader>
         <form onSubmit={save} className="space-y-4">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {SCHEDULE_KINDS.map((k) => (
               <button
                 type="button"
