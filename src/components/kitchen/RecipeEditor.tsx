@@ -180,7 +180,7 @@ export function RecipeEditor({
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) void toJpeg(f).then(setFile); e.target.value = ""; }}
               />
             </label>
           </div>
