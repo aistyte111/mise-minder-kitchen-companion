@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Camera } from "lucide-react";
+import { Camera, FileText, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { readRecipeFile } from "@/lib/recipe-import.functions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -36,8 +38,53 @@ export function RecipeEditor({
   });
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
+  const readFn = useServerFn(readRecipeFile);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [k]: e.target.value });
+
+  async function importFrom(f: File) {
+    setReading(true);
+    try {
+      const name = f.name.toLowerCase();
+      let input: { fileBase64: string | null; mediaType: string | null; text: string | null };
+      if (f.type.startsWith("image/") || name.endsWith(".pdf")) {
+        if (f.type === "image/heic" || name.endsWith(".heic")) throw new Error("Please use a JPG or PNG photo.");
+        const buf = new Uint8Array(await f.arrayBuffer());
+        let bin = "";
+        for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+        input = { fileBase64: btoa(bin), mediaType: f.type || "application/pdf", text: null };
+      } else if (/\.(xlsx|xls|csv|ods)$/.test(name)) {
+        const XLSX = await import("xlsx");
+        const wb = XLSX.read(await f.arrayBuffer());
+        const text = wb.SheetNames.map((s) => `# Sheet: ${s}\n${XLSX.utils.sheet_to_csv(wb.Sheets[s]!)}`).join("\n\n");
+        input = { fileBase64: null, mediaType: null, text };
+      } else if (name.endsWith(".docx")) {
+        const mammoth = await import("mammoth");
+        const { value } = await mammoth.convertToHtml({ arrayBuffer: await f.arrayBuffer() });
+        input = { fileBase64: null, mediaType: null, text: value };
+      } else {
+        throw new Error("Please choose a photo, PDF, Excel or Word (.docx) file.");
+      }
+      const r = await readFn({ data: { filename: f.name, ...input } });
+      setForm((cur) => ({
+        title: r.title || cur.title,
+        category: r.category || cur.category,
+        servings: r.servings || cur.servings,
+        ingredients: r.ingredients || cur.ingredients,
+        instructions: r.instructions || cur.instructions,
+        notes: r.notes || cur.notes,
+        allergens: r.allergens.length ? r.allergens : cur.allergens,
+      }));
+      if (f.type.startsWith("image/") && !file && !recipe?.photo_path) setFile(f);
+      toast.success("Recipe read — check it before saving");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't read the file.");
+    } finally {
+      setReading(false);
+    }
+  }
+
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -85,6 +132,20 @@ export function RecipeEditor({
           <DialogTitle className="font-display text-2xl font-normal">{recipe ? "Edit recipe" : "New recipe"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={save} className="space-y-4">
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-primary/40 bg-primary/5 p-4 text-sm hover:bg-primary/10">
+            {reading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <FileText className="h-5 w-5 text-primary" />}
+            <span>
+              <span className="font-medium">{reading ? "Reading recipe… this can take a minute" : "Fill in from a photo or file"}</span>
+              <span className="block text-muted-foreground">Photo of a recipe, PDF, Word or Excel. You can check it before saving.</span>
+            </span>
+            <input
+              type="file"
+              className="sr-only"
+              disabled={reading}
+              accept="image/*,.pdf,.docx,.xlsx,.xls,.csv,.ods"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void importFrom(f); e.target.value = ""; }}
+            />
+          </label>
           <div className="space-y-1.5">
             <Label htmlFor="title">Name</Label>
             <Input id="title" value={form.title} onChange={set("title")} required />
