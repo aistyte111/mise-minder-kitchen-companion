@@ -60,6 +60,7 @@ function SchedulePage() {
   const { data: notes } = useSuspenseQuery(notesQuery(from, to));
   const { data: role } = useQuery(roleQuery);
   const [dialog, setDialog] = useState<null | "item" | "note" | "import">(null);
+  const [tab, setTab] = useState<"shifts" | "ops">("shifts");
   const qc = useQueryClient();
 
   const days = Array.from({ length: 21 }, (_, i) => toISODate(addDays(new Date(), i)));
@@ -91,10 +92,23 @@ function SchedulePage() {
           )
         }
       />
+      <div role="tablist" className="mb-4 inline-flex rounded-xl bg-muted p-1">
+        {([["shifts", "Shifts"], ["ops", "Operations"]] as const).map(([v, l]) => (
+          <button
+            key={v}
+            role="tab"
+            aria-selected={tab === v}
+            onClick={() => setTab(v)}
+            className={cn("rounded-lg px-4 py-2 text-sm font-medium", tab === v ? "bg-card shadow-card" : "text-muted-foreground")}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
       <div className="space-y-3">
         {days.map((d, i) => {
-          const dayItems = items.filter((x) => x.item_date === d);
-          const dayNotes = notes.filter((x) => x.note_date === d);
+          const dayItems = items.filter((x) => x.item_date === d && (tab === "shifts") === (x.kind === "shift"));
+          const dayNotes = tab === "ops" ? notes.filter((x) => x.note_date === d) : [];
           const empty = !dayItems.length && !dayNotes.length;
           return (
             <section key={d} className={cn("rounded-2xl bg-card p-4 shadow-card", empty && "opacity-60")}>
