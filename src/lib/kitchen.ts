@@ -16,6 +16,9 @@ export const ALLERGENS = [
   "Sulphites",
   "Lupin",
   "Molluscs",
+  "Onion",
+  "Garlic",
+  "Gelatine",
 ] as const;
 
 export const SCHEDULE_KINDS = [
