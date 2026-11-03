@@ -1,6 +1,6 @@
 # Mise Minder Kitchen Companion
 
-Iwant to build a mobile (android, iphone) app and computer program together for my kitchen team to log recipes(instructions, ingredients, notes), allergies, upload picture, transcribe text from pictures, schedule, importants notes for that day and upcoming week
+I want to build a mobile (android, iphone) app and computer program together for my kitchen team to log recipes (instructions, ingredients, notes), allergies, upload picture, transcribe text from pictures, schedule, important notes for that day and upcoming week.
 
 This project was built with [Lovable](https://lovable.dev).
 
