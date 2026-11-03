@@ -43,13 +43,24 @@ export function RecipeEditor({
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  async function importFrom(f: File) {
+  // iPhone photos arrive as HEIC; browsers and the AI reader need JPEG instead.
+  async function toJpeg(f: File): Promise<File> {
+    const name = f.name.toLowerCase();
+    const isHeic = ["image/heic", "image/heif", "image/heic-sequence"].includes(f.type) || /\.hei[cf]$/.test(name);
+    if (!isHeic) return f;
+    const heic2any = (await import("heic2any")).default;
+    const blob = (await heic2any({ blob: f, toType: "image/jpeg", quality: 0.9 })) as Blob;
+    const jpgName = name.replace(/\.hei[cf]$/, "") + ".jpg";
+    return new File([blob], jpgName, { type: "image/jpeg" });
+  }
+
+  async function importFrom(fileIn: File) {
     setReading(true);
     try {
+      const f = await toJpeg(fileIn);
       const name = f.name.toLowerCase();
       let input: { fileBase64: string | null; mediaType: string | null; text: string | null };
       if (f.type.startsWith("image/") || name.endsWith(".pdf")) {
-        if (f.type === "image/heic" || name.endsWith(".heic")) throw new Error("Please use a JPG or PNG photo.");
         const buf = new Uint8Array(await f.arrayBuffer());
         let bin = "";
         for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
@@ -169,7 +180,7 @@ export function RecipeEditor({
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) void toJpeg(f).then(setFile); e.target.value = ""; }}
               />
             </label>
           </div>
