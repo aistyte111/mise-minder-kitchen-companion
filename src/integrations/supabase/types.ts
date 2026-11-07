@@ -41,6 +41,106 @@ export type Database = {
         }
         Relationships: []
       }
+      misa_projects: {
+        Row: {
+          created_at: string
+          created_by: string
+          details: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          details?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          details?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      misa_sources: {
+        Row: {
+          created_at: string
+          filename: string
+          id: string
+          project_id: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          filename: string
+          id?: string
+          project_id: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          filename?: string
+          id?: string
+          project_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "misa_sources_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "misa_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      misa_tasks: {
+        Row: {
+          created_at: string
+          created_by: string
+          details: string
+          id: string
+          project_id: string
+          status: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          details?: string
+          id?: string
+          project_id: string
+          status?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          details?: string
+          id?: string
+          project_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "misa_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "misa_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           body: string

@@ -137,3 +137,29 @@ export async function signedPhotoUrl(path: string) {
   const { data } = await supabase.storage.from("recipe-photos").createSignedUrl(path, 60 * 60);
   return data?.signedUrl ?? null;
 }
+
+export const misaProjectsQuery = queryOptions({
+  queryKey: ["misa", "projects"],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("misa_projects").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+});
+export const misaTasksQuery = (projectId: string) => queryOptions({
+  queryKey: ["misa", "tasks", projectId],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("misa_tasks").select("*").eq("project_id", projectId).order("created_at");
+    if (error) throw error;
+    return data;
+  },
+  refetchInterval: 10000,
+});
+export const misaSourcesQuery = (projectId: string) => queryOptions({
+  queryKey: ["misa", "sources", projectId],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("misa_sources").select("*").eq("project_id", projectId).order("created_at");
+    if (error) throw error;
+    return data;
+  },
+});
