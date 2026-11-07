@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as AuthenticatedAllergiesRouteImport } from './routes/_authenticated/allergies'
+import { Route as AuthenticatedMisaRouteImport } from './routes/_authenticated/misa'
 import { Route as AuthenticatedScheduleRouteImport } from './routes/_authenticated/schedule'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedTodayRouteImport } from './routes/_authenticated/today'
@@ -42,6 +43,11 @@ const JoinRoute = JoinRouteImport.update({
 const AuthenticatedAllergiesRoute = AuthenticatedAllergiesRouteImport.update({
   id: '/allergies',
   path: '/allergies',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMisaRoute = AuthenticatedMisaRouteImport.update({
+  id: '/misa',
+  path: '/misa',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedScheduleRoute = AuthenticatedScheduleRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/join': typeof JoinRoute
   '/allergies': typeof AuthenticatedAllergiesRoute
+  '/misa': typeof AuthenticatedMisaRoute
   '/schedule': typeof AuthenticatedScheduleRoute
   '/team': typeof AuthenticatedTeamRoute
   '/today': typeof AuthenticatedTodayRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/join': typeof JoinRoute
   '/allergies': typeof AuthenticatedAllergiesRoute
+  '/misa': typeof AuthenticatedMisaRoute
   '/schedule': typeof AuthenticatedScheduleRoute
   '/team': typeof AuthenticatedTeamRoute
   '/today': typeof AuthenticatedTodayRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/join': typeof JoinRoute
   '/_authenticated/allergies': typeof AuthenticatedAllergiesRoute
+  '/_authenticated/misa': typeof AuthenticatedMisaRoute
   '/_authenticated/schedule': typeof AuthenticatedScheduleRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/_authenticated/today': typeof AuthenticatedTodayRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/join'
     | '/allergies'
+    | '/misa'
     | '/schedule'
     | '/team'
     | '/today'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/join'
     | '/allergies'
+    | '/misa'
     | '/schedule'
     | '/team'
     | '/today'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/join'
     | '/_authenticated/allergies'
+    | '/_authenticated/misa'
     | '/_authenticated/schedule'
     | '/_authenticated/team'
     | '/_authenticated/today'
@@ -187,6 +199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAllergiesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/misa': {
+      id: '/_authenticated/misa'
+      path: '/misa'
+      fullPath: '/misa'
+      preLoaderRoute: typeof AuthenticatedMisaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/schedule': {
       id: '/_authenticated/schedule'
       path: '/schedule'
@@ -227,6 +246,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAllergiesRoute: typeof AuthenticatedAllergiesRoute
+  AuthenticatedMisaRoute: typeof AuthenticatedMisaRoute
   AuthenticatedScheduleRoute: typeof AuthenticatedScheduleRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedTodayRoute: typeof AuthenticatedTodayRoute
@@ -236,6 +256,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAllergiesRoute: AuthenticatedAllergiesRoute,
+  AuthenticatedMisaRoute: AuthenticatedMisaRoute,
   AuthenticatedScheduleRoute: AuthenticatedScheduleRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedTodayRoute: AuthenticatedTodayRoute,
