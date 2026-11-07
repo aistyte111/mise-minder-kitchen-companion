@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, CalendarDays, LogOut, ShieldAlert, Sun, Users } from "lucide-react";
+import { BookOpen, CalendarDays, ClipboardList, LogOut, ShieldAlert, Sun, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { roleQuery } from "@/lib/kitchen";
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_authenticated")({
 const nav = [
   { to: "/today", label: "Today", icon: Sun },
   { to: "/recipes", label: "Recipes", icon: BookOpen },
+  { to: "/misa", label: "Misa", icon: ClipboardList },
   { to: "/schedule", label: "Schedule", icon: CalendarDays },
   { to: "/allergies", label: "Allergies", icon: ShieldAlert },
 ] as const;
@@ -38,7 +39,7 @@ function Shell() {
       <aside className="hidden w-60 shrink-0 flex-col bg-sidebar p-5 text-sidebar-foreground md:flex md:sticky md:top-0 md:h-screen">
         <p className="font-display text-3xl text-sidebar-accent-foreground">Mise</p>
         <p className="mt-1 text-xs uppercase tracking-widest text-sidebar-foreground/60">
-          {role?.isAdmin ? "Manager · can edit" : "Staff · view only"}
+          {role?.isAdmin ? "Manager · can edit" : "Staff · Misa access"}
         </p>
         <nav className="mt-8 flex flex-col gap-1">
           {nav.map(({ to, label, icon: Icon }) => (
@@ -72,7 +73,7 @@ function Shell() {
         </div>
       </main>
 
-      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-sidebar-border bg-sidebar pt-2 text-sidebar-foreground md:hidden">
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-sidebar-border bg-sidebar pt-2 text-sidebar-foreground md:hidden">
         {nav.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}
