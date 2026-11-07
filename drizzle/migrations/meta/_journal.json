@@ -15,6 +15,13 @@
       "when": 1793821243338,
       "tag": "0001_invite_only_role_assignment",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794080018613,
+      "tag": "0002_misa_prep_workflow",
+      "breakpoints": true
     }
   ]
 }
