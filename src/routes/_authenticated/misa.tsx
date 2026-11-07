@@ -87,7 +87,7 @@ function PrepBoard({ project }: { project: Tables<"misa_projects"> }) {
   </>;
 }
 
-function TaskEditor({ projectId, task, onClose }: { projectId: string; task?: Tables<"misa_tasks">; onClose: () => void }) {
+function TaskEditor({ projectId, task, onClose }: { projectId: string; task: Tables<"misa_tasks"> | undefined; onClose: () => void }) {
   const [title, setTitle] = useState(task?.title ?? "");
   const [details, setDetails] = useState(task?.details ?? "");
   const [busy, setBusy] = useState(false);
@@ -96,7 +96,7 @@ function TaskEditor({ projectId, task, onClose }: { projectId: string; task?: Ta
     e.preventDefault(); setBusy(true);
     try {
       const row = misaTaskSchema.parse({ title, details, status: task?.status ?? "todo" });
-      const result = task ? await supabase.from("misa_tasks").update(row).eq("id", task.id) : await supabase.from("misa_tasks").insert({ ...row, project_id: projectId });
+      const result = task ? await supabase.from("misa_tasks").update({ title: row.title, details: row.details }).eq("id", task.id) : await supabase.from("misa_tasks").insert({ ...row, project_id: projectId });
       if (result.error) throw result.error;
       await qc.invalidateQueries({ queryKey: ["misa"] }); onClose();
     } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save task."); }
