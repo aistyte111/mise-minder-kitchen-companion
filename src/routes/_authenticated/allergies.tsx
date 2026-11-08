@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/allergies")({
       { name: "description", content: "Guest allergy notes and which dishes contain each allergen." },
       { property: "og:title", content: "Allergies — Mise" },
       { property: "og:description", content: "Guest allergy notes and which dishes contain each allergen." },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ context }) => {

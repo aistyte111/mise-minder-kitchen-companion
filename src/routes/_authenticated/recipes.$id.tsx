@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/recipes/$id")({
       { name: "description", content: "Ingredients, method, notes and allergens for this dish." },
       { property: "og:title", content: "Recipe — Mise" },
       { property: "og:description", content: "Ingredients, method, notes and allergens for this dish." },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context, params }) => context.queryClient.ensureQueryData(recipeQuery(params.id)),

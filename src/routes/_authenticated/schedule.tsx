@@ -36,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/schedule")({
       { name: "description", content: "Shifts, prep tasks, events and notes for the next three weeks." },
       { property: "og:title", content: "Schedule — Mise" },
       { property: "og:description", content: "Shifts, prep tasks, events and notes for the next three weeks." },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ context }) => {

@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/today")({
       { name: "description", content: "Today's important notes, shifts and guest allergies, plus the week ahead." },
       { property: "og:title", content: "Today — Mise" },
       { property: "og:description", content: "Today's important notes, shifts and guest allergies, plus the week ahead." },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ context }) => {
