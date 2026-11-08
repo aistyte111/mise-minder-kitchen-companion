@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/recipes/")({
       { name: "description", content: "The kitchen's recipe book with photos, method and allergens." },
       { property: "og:title", content: "Recipes — Mise" },
       { property: "og:description", content: "The kitchen's recipe book with photos, method and allergens." },
+      { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(recipesQuery),
