@@ -24,7 +24,7 @@ export async function attachMisaFiles(files: File[]) {
   try {
     for (const file of files) {
       const path = `${projectId}/${crypto.randomUUID()}.${file.name.split(".").pop() ?? "bin"}`;
-      const { error } = await supabase.storage.from("misa-files").upload(path, file, { contentType: file.type || undefined });
+      const { error } = await supabase.storage.from("misa-files").upload(path, file, file.type ? { contentType: file.type } : {});
       if (error) throw error;
       uploaded.push(path);
     }
