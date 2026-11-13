@@ -58,6 +58,7 @@ function TodayPage() {
               {todayNotes.map((n) => (
                 <li key={n.id} className={cn("whitespace-pre-wrap rounded-lg p-3 text-sm", n.important ? "bg-warning/50 font-medium" : "bg-muted")}>
                   {n.important && "⚠ "}
+                  {!n.important && n.kind !== "note" && <span className="mr-2 text-xs font-semibold uppercase tracking-wide text-primary">{n.kind === "prep" ? "Prep" : "Event"}</span>}
                   {n.body}
                 </li>
               ))}

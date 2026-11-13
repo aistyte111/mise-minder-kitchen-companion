@@ -29,6 +29,20 @@
       "when": 1794574966857,
       "tag": "0003_scope_team_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794575775700,
+      "tag": "0004_misa_single_board",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794575789304,
+      "tag": "0005_misa_files_managers_only",
+      "breakpoints": true
     }
   ]
 }

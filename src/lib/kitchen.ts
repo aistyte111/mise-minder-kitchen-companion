@@ -146,20 +146,29 @@ export const misaProjectsQuery = queryOptions({
     return data;
   },
 });
-export const misaTasksQuery = (projectId: string) => queryOptions({
-  queryKey: ["misa", "tasks", projectId],
+export const misaTasksQuery = queryOptions({
+  queryKey: ["misa", "tasks"],
   queryFn: async () => {
-    const { data, error } = await supabase.from("misa_tasks").select("*").eq("project_id", projectId).order("created_at");
+    const { data, error } = await supabase.from("misa_tasks").select("*").order("created_at");
     if (error) throw error;
     return data;
   },
   refetchInterval: 10000,
 });
-export const misaSourcesQuery = (projectId: string) => queryOptions({
-  queryKey: ["misa", "sources", projectId],
+export const misaSourcesQuery = queryOptions({
+  queryKey: ["misa", "sources"],
   queryFn: async () => {
-    const { data, error } = await supabase.from("misa_sources").select("*").eq("project_id", projectId).order("created_at");
+    const { data, error } = await supabase.from("misa_sources").select("*").order("created_at");
     if (error) throw error;
     return data;
   },
 });
+/** Storage folder rules need a project; Misa uses the oldest one as the single board. */
+export async function misaBoardProjectId() {
+  const { data, error } = await supabase.from("misa_projects").select("id").order("created_at").limit(1);
+  if (error) throw error;
+  if (data[0]) return data[0].id;
+  const created = await supabase.from("misa_projects").insert({ title: "Misa" }).select("id").single();
+  if (created.error) throw created.error;
+  return created.data.id;
+}
