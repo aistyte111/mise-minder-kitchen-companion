@@ -10,3 +10,15 @@ describe("Misa shared prep workflow", () => {
   it("can send a ready task back to To do", () => { expect(canMovePrepTask("ready", "todo")).toBe(true); });
   it("rejects invalid stages", () => { expect(canMovePrepTask("ready", "archived")).toBe(false); expect(misaTaskSchema.safeParse({ title: "Prep", details: "", status: "archived" }).success).toBe(false); });
 });
+import { canEditMisa, nextStage, noteFields, prevStage } from "../lib/misa-workflow";
+describe("Misa board rules", () => {
+  it("staff cannot add, edit or delete", () => { expect(canEditMisa("staff")).toBe(false); });
+  it("managers can add, edit and delete", () => { expect(canEditMisa("admin")).toBe(true); });
+  it("advances To do → In process → Ready", () => { expect(nextStage("todo")).toBe("in_process"); expect(nextStage("in_process")).toBe("ready"); expect(nextStage("ready")).toBe(null); });
+  it("moves back for mistakes", () => { expect(prevStage("ready")).toBe("in_process"); expect(prevStage("todo")).toBe(null); });
+  it("stores the three note types", () => {
+    expect(noteFields("important")).toEqual({ kind: "note", important: true });
+    expect(noteFields("prep")).toEqual({ kind: "prep", important: false });
+    expect(noteFields("event")).toEqual({ kind: "event", important: false });
+  });
+});
