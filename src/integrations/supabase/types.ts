@@ -99,9 +99,11 @@ export type Database = {
       }
       misa_tasks: {
         Row: {
+          allergens: string[]
           created_at: string
           created_by: string
           details: string
+          dish: string
           id: string
           project_id: string
           status: string
@@ -110,9 +112,11 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          allergens?: string[]
           created_at?: string
           created_by?: string
           details?: string
+          dish?: string
           id?: string
           project_id: string
           status?: string
@@ -121,9 +125,11 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          allergens?: string[]
           created_at?: string
           created_by?: string
           details?: string
+          dish?: string
           id?: string
           project_id?: string
           status?: string
@@ -147,6 +153,7 @@ export type Database = {
           created_at: string
           id: string
           important: boolean
+          kind: string
           note_date: string
         }
         Insert: {
@@ -154,6 +161,7 @@ export type Database = {
           created_at?: string
           id?: string
           important?: boolean
+          kind?: string
           note_date: string
         }
         Update: {
@@ -161,6 +169,7 @@ export type Database = {
           created_at?: string
           id?: string
           important?: boolean
+          kind?: string
           note_date?: string
         }
         Relationships: []
