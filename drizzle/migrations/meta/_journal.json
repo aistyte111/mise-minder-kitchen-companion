@@ -22,6 +22,13 @@
       "when": 1794080018613,
       "tag": "0002_misa_prep_workflow",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794574966857,
+      "tag": "0003_scope_team_policies",
+      "breakpoints": true
     }
   ]
 }
